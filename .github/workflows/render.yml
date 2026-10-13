@@ -1,0 +1,73 @@
+name: Render Sarvam film
+
+on:
+  workflow_dispatch:
+    inputs:
+      scale:
+        description: "Render scale (0.25 = fast/low, 0.5 = preview, 1 = full)"
+        required: true
+        default: "0.5"
+      composition:
+        description: "FilmWithReveal (reveal + film) or SarvamFilm (film only)"
+        required: true
+        default: "FilmWithReveal"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Fetch media assets (from release)
+        run: |
+          set -e
+          URL="https://github.com/${{ github.repository }}/releases/download/assets-v1/public-assets.zip"
+          echo "downloading $URL"
+          curl -sSL --fail -o assets.zip "$URL"
+          ls -lh assets.zip
+          unzip -q -o assets.zip -d .
+          echo "--- public/ ---"
+          ls -la public | head -20
+
+      - name: Install node deps
+        run: npm install --no-audit --no-fund
+
+      - name: Install Chrome
+        id: chrome
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: stable
+
+      - name: Capture approved logo reveal to MP4
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: bash scripts/capture-reveal.sh
+
+      - name: Render preview
+        env:
+          CHROME_PATH: ${{ steps.chrome.outputs.chrome-path }}
+        run: |
+          npx remotion render "${{ github.event.inputs.composition || 'FilmWithReveal' }}" \
+            out/preview.mp4 \
+            --scale="${{ github.event.inputs.scale || '0.5' }}" \
+            --browser-executable="$CHROME_PATH" \
+            --concurrency=4
+
+      - name: Upload preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: sarvam-preview
+          path: |
+            out/preview.mp4
+            public/logo_reveal.mp4
+          retention-days: 7
+          if-no-files-found: error
