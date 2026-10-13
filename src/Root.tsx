@@ -1,13 +1,16 @@
 import React from 'react';
-import {Composition, Sequence, AbsoluteFill, OffthreadVideo, staticFile} from 'remotion';
+import {Composition, Sequence, AbsoluteFill} from 'remotion';
 import {SarvamFilm} from './Film';
+import {LogoReveal, REVEAL_FRAMES} from './LogoReveal';
 
-export const REVEAL_FRAMES = 300; // 10s @30fps — the approved logo reveal
-
+/* The approved logo reveal is now a real composition in this project —
+   no external capture step. It plays first, then the film. The film sits
+   inside a <Sequence>, so its internal frame clock (and therefore the
+   audio, which is the master clock) still starts at 0. */
 const FilmWithReveal: React.FC = () => (
   <AbsoluteFill style={{backgroundColor: '#07080a'}}>
     <Sequence from={0} durationInFrames={REVEAL_FRAMES}>
-      <OffthreadVideo src={staticFile('logo_reveal.mp4')} />
+      <LogoReveal />
     </Sequence>
     <Sequence from={REVEAL_FRAMES}>
       <SarvamFilm />
@@ -17,6 +20,14 @@ const FilmWithReveal: React.FC = () => (
 
 export const RemotionRoot: React.FC = () => (
   <>
+    <Composition
+      id="LogoReveal"
+      component={LogoReveal}
+      durationInFrames={REVEAL_FRAMES}
+      fps={30}
+      width={1920}
+      height={1080}
+    />
     <Composition
       id="SarvamFilm"
       component={SarvamFilm}
