@@ -1,0 +1,17 @@
+{
+  "name": "sarvam-video-render",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "render": "remotion render SarvamFilm out/video.mp4",
+    "render:preview": "remotion render FilmWithReveal out/preview.mp4 --scale=0.5",
+    "render:film": "remotion render SarvamFilm out/film.mp4 --scale=0.5",
+    "capture:reveal": "bash scripts/capture-reveal.sh"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.535",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "remotion": "^4.0.535"
+  }
+}
