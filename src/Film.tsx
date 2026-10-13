@@ -31,8 +31,8 @@ const FontFaces: React.FC = () => (
 const OFFWHITE = '#f3f3f1';
 const PAPER = '#fefefe';
 const INK = '#121317';
-const BLUE = '#2f78f0';
-const PURPLE = '#55229b';
+const BLUE = '#1647d4';   /* brand deep blue  */
+const PURPLE = '#ef6730'; /* brand warm orange */
 const GREY = '#8a8a8f';
 
 const clamp = {extrapolateLeft: 'clamp' as const, extrapolateRight: 'clamp' as const};
@@ -197,7 +197,7 @@ const B03: React.FC<{dur: number}> = ({dur}) => {
     <AbsoluteFill style={{backgroundColor: OFFWHITE, justifyContent: 'center', alignItems: 'center'}}>
       <ContourGrid opacity={grid} />
       <div style={{opacity: o, textAlign: 'center'}}>
-        <Head size={72} weight={600}>Sarvam <span style={{color: '#b9b3c6'}}>— India's full-stack</span></Head>
+        <Head size={72} weight={600}>Sarvam <span style={{color: '#c1ccf5'}}>— India's full-stack</span></Head>
         <Head size={72} weight={400} color="#6f6a86">sovereign AI platform</Head>
       </div>
     </AbsoluteFill>
@@ -489,7 +489,7 @@ const B14: React.FC<{dur: number}> = ({dur}) => {
 export const SarvamFilm: React.FC = () => {
   return (
     <AbsoluteFill style={{backgroundColor: OFFWHITE}}>
-      <Audio src={staticFile('mixed_audio.m4a')} />
+      <Audio src={staticFile('mixed_audio.wav')} />
       <Scene from={0} to={135}><B01 dur={135} /></Scene>
       <Scene from={135} to={615}><B02 dur={480} /></Scene>
       <Scene from={615} to={795}><B03 dur={180} /></Scene>
